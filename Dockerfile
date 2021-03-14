@@ -6,8 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y \
     && apt-get install -y apt-utils git wget pkg-config libgmp-dev libssl-dev \
       libtinfo-dev libsystemd-dev zlib1g-dev llvm-9 automake make libtool \
-      build-essential libffi-dev libncursesw5 g++ jq haskell-platform autoconf \
-    && apt-get clean
+      build-essential libffi-dev libncursesw5 g++ jq haskell-platform autoconf
 
 # install ghc
 ARG GHC_VERSION=8.6.5
