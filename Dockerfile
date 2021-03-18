@@ -12,7 +12,6 @@ RUN apt-get update -y && apt-get full-upgrade \
         libnuma-dev \
     && export PATH=/usr/lib/llvm-9/bin:$PATH 
 
-
 FROM dependencies AS ghc
 RUN wget https://downloads.haskell.org/ghc/8.8.2/ghc-8.8.2-aarch64-deb9-linux.tar.xz \
     && tar -xvf ghc-8.8.2-aarch64-deb9-linux.tar.xz \
@@ -58,6 +57,4 @@ FROM debian:bullseye-slim
 COPY --from=cardano /opt/cardano /opt/cardano
 RUN apt-get update -y && apt-get full-upgrade -y \
     export PATH=/opt/cardano:$PATH
-
-
 
