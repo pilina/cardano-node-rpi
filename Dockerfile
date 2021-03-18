@@ -1,13 +1,14 @@
 FROM debian:bullseye-slim AS dependencies
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -y && apt-get full-upgrade \
+RUN apt-get update -y && apt-get full-upgrade -y \
     && apt-get install -y \
         wget \
         git \
         xz-utils \
         make \
         gcc \
-        libtinfo 5 \
+        libtool \
+        libtinfo5 \
         llvm-9-dev \
         libnuma-dev \
     && export PATH=/usr/lib/llvm-9/bin:$PATH 
@@ -40,6 +41,7 @@ FROM dependencies AS cardano
 COPY --from=ghc /opt/ghc /opt/ghc
 COPY --from=libsodium /opt/libsodium /opt/libsodium
 COPY --from=cabal /usr/local/bin/cabal /usr/local/bin/cabal
+COPY --from=cabal /root/.cabal /root/.cabal
 RUN export PATH=/opt/ghc/bin:$PATH LD_LIBRARY_PATH=/opt/libsodium/lib:$LD_LIBRARY_PATH \
     && git clone https://github.com/input-output-hk/cardano-node.git \
     && cd cardano-node \
@@ -51,10 +53,11 @@ RUN export PATH=/opt/ghc/bin:$PATH LD_LIBRARY_PATH=/opt/libsodium/lib:$LD_LIBRAR
     && echo "  flags: -external-libsodium-vrf" >>  cabal.project.local \
     && cabal build all \
     && cabal install --installdir /opt/cardano cardano-cli cardano-node \
-    && cd .. && rm -rf cardano-node \
+    && cd .. && rm -rf cardano-node
 
 FROM debian:bullseye-slim
 COPY --from=cardano /opt/cardano /opt/cardano
 RUN apt-get update -y && apt-get full-upgrade -y \
-    export PATH=/opt/cardano:$PATH
+    export PATH=/opt/cardano:$PATH \
+    echo "All Done!"
 
