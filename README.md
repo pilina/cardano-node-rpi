@@ -80,3 +80,13 @@ means you'll have to expose ports and volumes between the container and your
 host to make it work properly. For ease of use, I've set up the defaults based
 on the [Cardano Node](https://docs.cardano.org/projects/cardano-node/en/latest/index.html)
 documentation. Feel free to change those to your liking though.
+
+# Support
+
+Connect with me via [Telegram](https://telegram.me/thomasstachl) to get support,
+stake your ADA on my stake pool while you're building yours, and think about
+buying me a coffee:
+
+```
+addr1q8mc56fpn6zvm4mnfp2f2e0qw94a0xzuutzx924p7x0dzt3pl4yfu0zfd4c9vege49m777rm48tgjz4hn8lt0kh2jmts6tfv30
+```
