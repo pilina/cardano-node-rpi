@@ -30,6 +30,15 @@ FROM --platform=linux/arm64 pilina/cardano-node-build:latest
 RUN ...
 ```
 
+This image has been built on a Raspberry Pi 4b running [RaspiOS Lite Buster arm64](https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2020-08-24/).
+As long as you're running this os with an [up to date docker install](https://github.com/tstachl/dotfiles/blob/master/.config/yadm/bootstrap#L7-L11)
+you should be good to run it. I have noticed building Cardano Node on a system
+running purely on SD cards (no USB SSD harddrive) takes a lot longer. That's why
+I would strongly urge to run this on a system with SSD hard drive. I'm going to
+test running a relay on a Raspberry Pi 4b with 4GB RAM and SD card only at some
+point in the future. But I would, at present, not recommend it for a production
+stake pool.
+
 ### The opinionated Play Stage
 
 Use this to get started right away. Without having to build anything, you can
