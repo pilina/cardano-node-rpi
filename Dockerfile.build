@@ -54,13 +54,15 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
     && echo "package cardano-crypto-praos" >>  cabal.project.local \
     && echo "  flags: -external-libsodium-vrf" >>  cabal.project.local \
     && cabal build all \
-    && cabal install cardano-cli cardano-node
+    && cabal install cardano-cli cardano-node \
+    && mkdir -p /opt/cardano/bin \
+    && mv $(readlink ~/.cabal/bin/cardano-cli) /opt/cardano/bin \
+    && mv $(readlink ~/.cabal/bin/cardano-node) /opt/cardano/bin
 
 FROM debian:bullseye-slim
 RUN apt-get update -y && apt-get full-upgrade -y \
     && apt-get install -y libnuma1
 COPY --from=build /opt/libsodium /opt/cardano
-COPY --from=build /root/.cabal/store/ghc-8.8.2/cardano-cli-1.26.0-e-cardano-cli-bb7e87ff3daef7fafde826f56998646469b2a7c5b404880fe3b7a5c583481dbc /opt/cardano
-COPY --from=build /root/.cabal/store/ghc-8.8.2/cardano-node-1.26.0-e-cardano-node-10d0ee9db2b495c48ca4fcd6114aeb1bfce8e10b2d4357fd20d2fefc574e1905 /opt/cardano
+COPY --from=build /opt/cardano/bin /opt/cardano/bin
 ENV PATH="/opt/cardano/bin:${PATH}" \
     LD_LIBRARY_PATH="/opt/cardano/lib:${LD_LIBRARY_PATH}"
