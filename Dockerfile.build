@@ -1,4 +1,8 @@
-FROM debian:bullseye-slim
+FROM debian:bullseye-slim AS build
+LABEL name="Cardano Node Build"
+LABEL description="A cardano node image purpose built for Raspberry Pi 4b"
+LABEL maintainer="Pilina <team@pilina.com>"
+
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && apt-get full-upgrade -y \
     && apt-get install -y \
@@ -52,3 +56,11 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
     && cabal build all \
     && cabal install cardano-cli cardano-node
 
+FROM debian:bullseye-slim
+RUN apt-get update -y && apt-get full-upgrade -y \
+    && apt-get install -y libnuma1
+COPY --from=build /opt/libsodium /opt/cardano
+COPY --from=build /root/.cabal/store/ghc-8.8.2/cardano-cli-1.26.0-e-cardano-cli-bb7e87ff3daef7fafde826f56998646469b2a7c5b404880fe3b7a5c583481dbc /opt/cardano
+COPY --from=build /root/.cabal/store/ghc-8.8.2/cardano-node-1.26.0-e-cardano-node-10d0ee9db2b495c48ca4fcd6114aeb1bfce8e10b2d4357fd20d2fefc574e1905 /opt/cardano
+ENV PATH="/opt/cardano/bin:${PATH}" \
+    LD_LIBRARY_PATH="/opt/cardano/lib:${LD_LIBRARY_PATH}"
