@@ -15,6 +15,16 @@ RUN git clone https://github.com/input-output-hk/cardano-rt-view.git \
     && git checkout tags/${VERSION} \
     && cabal configure --with-compiler=ghc-8.8.2 \
     && cabal build all \
-    && cabal install cardano-rt-view
+    && cabal install \
+    && mkdir -p /opt/cardano/bin \
+    && mv $(readlink -f ~/.cabal/bin/cardano-rt-view) /opt/cardano/bin
+
+FROM debian:bullseye-slim
+RUN apt-get update -y && apt-get full-upgrade -y
+    # && apt-get install -y 
+RUN useradd -ms /bin/bash pilina
+COPY --from=build /opt/cardano/bin /home/pilina/bin
+USER pilina
+ENV PATH="/home/pilina/bin:${PATH}"
 
 
