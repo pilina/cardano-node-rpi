@@ -18,7 +18,7 @@ RUN apt-get update -y && apt-get full-upgrade -y \
       zlib1g-dev
 ENV PATH="/usr/lib/llvm-9/bin:${PATH}"
 
-RUN arch=`uname -m`
+RUN arch=`uname -m` \
     && wget https://downloads.haskell.org/ghc/8.8.2/ghc-8.8.2-${arch}-deb9-linux.tar.xz \
     && tar -xf ghc-8.8.2-${arch}-deb9-linux.tar.xz \
     && rm ghc-8.8.2-${arch}-deb9-linux.tar.xz \
@@ -28,7 +28,7 @@ RUN arch=`uname -m`
     && cd .. && rm -rf ghc-8.8.2
 ENV PATH="/opt/ghc/bin:${PATH}"
 
-RUN arch=`uname -m`
+RUN arch=`uname -m` \
     && wget https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
     && tar -xvf cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
     && rm cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
