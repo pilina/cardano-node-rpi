@@ -18,18 +18,20 @@ RUN apt-get update -y && apt-get full-upgrade -y \
       zlib1g-dev
 ENV PATH="/usr/lib/llvm-9/bin:${PATH}"
 
-RUN wget https://downloads.haskell.org/ghc/8.8.2/ghc-8.8.2-aarch64-deb9-linux.tar.xz \
-    && tar -xvf ghc-8.8.2-aarch64-deb9-linux.tar.xz \
-    && rm ghc-8.8.2-aarch64-deb9-linux.tar.xz \
+RUN arch=`uname -m`
+    && wget https://downloads.haskell.org/ghc/8.8.2/ghc-8.8.2-${arch}-deb9-linux.tar.xz \
+    && tar -xf ghc-8.8.2-${arch}-deb9-linux.tar.xz \
+    && rm ghc-8.8.2-${arch}-deb9-linux.tar.xz \
     && cd ghc-8.8.2/ \
     && ./configure --prefix=/opt/ghc \
     && make -j5 install \
     && cd .. && rm -rf ghc-8.8.2
 ENV PATH="/opt/ghc/bin:${PATH}"
 
-RUN wget https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-aarch64-ubuntu-18.04.tar.xz \
-    && tar -xvf cabal-install-3.4.0.0-aarch64-ubuntu-18.04.tar.xz \
-    && rm cabal-install-3.4.0.0-aarch64-ubuntu-18.04.tar.xz \
+RUN arch=`uname -m`
+    && wget https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
+    && tar -xvf cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
+    && rm cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
     && mv cabal /usr/local/bin \
     && cabal update \
     && cabal --version
