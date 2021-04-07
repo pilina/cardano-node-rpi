@@ -28,10 +28,13 @@ RUN arch=`uname -m` \
     && cd .. && rm -rf ghc-8.8.2
 ENV PATH="/opt/ghc/bin:${PATH}"
 
-RUN arch=`uname -m` && echo "Arch: ${arch}" \
-    && wget -nv https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
-    && tar -xvf cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
-    && rm cabal-install-3.4.0.0-${arch}-ubuntu-18.04.tar.xz \
+RUN case `uname -m` in \
+      aarch64) filename="aarch64-ubuntu-18" ;; \
+            *) filename="x86_64-ubuntu-16" ;; \
+    esac \
+    && wget -nv https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-${filename}.04.tar.xz \
+    && tar -xvf cabal-install-3.4.0.0-${filename}.04.tar.xz \
+    && rm cabal-install-3.4.0.0-${filename}.04.tar.xz \
     && mv cabal /usr/local/bin \
     && cabal update \
     && cabal --version
