@@ -54,6 +54,5 @@ RUN case `uname -m` in \
     && tar -xvf cabal-install-3.4.0.0-${filename}.04.tar.xz \
     && rm cabal-install-3.4.0.0-${filename}.04.tar.xz \
     && mv cabal /usr/local/bin \
-    && cabal install -w ghc-8.8.2 cabal-install --constraint 'lukko -ofd-locking' \
     && cabal update \
     && cabal --version
