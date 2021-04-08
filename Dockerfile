@@ -13,6 +13,7 @@ RUN apt-get update -y && apt-get full-upgrade -y \
 RUN cabal --version \
     && cabal update \
     && cabal install cabal-install \
+    && export PATH="/root/.cabal/bin:$PATH" \
     && cabal --version
 
 # Get a special version of libsodium
