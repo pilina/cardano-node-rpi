@@ -44,16 +44,24 @@ FROM debian:bullseye-slim
 RUN apt-get update -y && apt-get full-upgrade -y \
     && apt-get install -y automake build-essential pkg-config libffi-dev \
       libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make \
-      g++ git wget libncursesw5 libtool autoconf libnuma-dev
+      g++ git wget libncursesw5 libtool autoconf libnuma-dev cabal-install
 
-RUN case `uname -m` in \
-      aarch64) filename="aarch64-ubuntu-18" ;; \
-            *) filename="x86_64-ubuntu-16" ;; \
-    esac \
-    && wget -nv https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-${filename}.04.tar.xz \
-    && tar -xvf cabal-install-3.4.0.0-${filename}.04.tar.xz \
-    && rm cabal-install-3.4.0.0-${filename}.04.tar.xz \
-    && mv cabal /usr/local/bin \
-    && cabal install cabal-install --constraint 'lukko -ofd-locking' \
+RUN cabal --version \
     && cabal update \
+    && cabal install cabal-install \
     && cabal --version
+
+
+# RUN case `uname -m` in \
+#       aarch64) filename="aarch64-ubuntu-18" ;; \
+#             *) filename="x86_64-ubuntu-16" ;; \
+#     esac \
+#     && wget -nv https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-${filename}.04.tar.xz \
+#     && tar -xvf cabal-install-3.4.0.0-${filename}.04.tar.xz \
+#     && rm cabal-install-3.4.0.0-${filename}.04.tar.xz \
+#     && mv cabal /usr/local/bin \
+#     && cabal install cabal-install --constraint 'lukko -ofd-locking' \
+#     && cabal update \
+#     && cabal --version
+
+
