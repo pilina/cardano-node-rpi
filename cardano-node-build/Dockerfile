@@ -1,12 +1,18 @@
-FROM pilina/cabal-base:3.4.0.0 AS build
+FROM debian:bullseye-slim
 LABEL name="Cardano Node Build"
 LABEL description="A cardano node image purpose built for Raspberry Pi 4b"
 LABEL maintainer="Pilina <team@pilina.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -y && apt-get install -y \
-      pkg-config \
-      libsystemd-dev
+RUN apt-get update -y && apt-get full-upgrade -y \
+    && apt-get install -y automake build-essential pkg-config libffi-dev \
+      libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make \
+      g++ git wget libncursesw5 libtool autoconf libnuma-dev cabal-install
+
+RUN cabal --version \
+    && cabal update \
+    && cabal install cabal-install \
+    && cabal --version
 
 RUN git clone https://github.com/input-output-hk/libsodium \
     && cd libsodium && git checkout 66f017f1 \
@@ -16,11 +22,12 @@ RUN git clone https://github.com/input-output-hk/libsodium \
 ENV LD_LIBRARY_PATH="/opt/libsodium/lib:${LD_LIBRARY_PATH}" \
     PKG_CONFIG_PATH="/opt/libsodium/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
-ARG VERSION=1.26.0
+ARG VERSION=1.26.1
 RUN git clone https://github.com/input-output-hk/cardano-node.git \
     && cd cardano-node \
     && git fetch --all --recurse-submodules --tags \
     && git checkout tags/${VERSION} \
+    && cabal update \
     && cabal configure --with-compiler=ghc-8.8.2 \
     && echo "jobs: 4" >>  cabal.project.local \
     && echo "package cardano-crypto-praos" >>  cabal.project.local \
