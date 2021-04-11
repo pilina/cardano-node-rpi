@@ -16,7 +16,7 @@ RUN case $(uname -m) in \
       aarch64) url="https://downloads.haskell.org/~ghc/8.10.4/ghc-8.10.4-aarch64-deb10-linux.tar.xz" ;; \
             *) url="https://downloads.haskell.org/~ghc/8.10.4/ghc-8.10.4-i386-deb9-linux.tar.xz" ;; \
     esac \
-    && curl $url -o ghc.tar.xv \
+    && curl $url -o ghc.tar.xz \
     && tar -xf ghc.tar.xz \
     && rm ghc.tar.xz \
     && cd ghc \
