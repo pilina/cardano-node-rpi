@@ -19,10 +19,10 @@ RUN case $(uname -m) in \
     && curl $url -o ghc.tar.xz \
     && tar -xf ghc.tar.xz \
     && rm ghc.tar.xz \
-    && cd ghc \
+    && cd ghc-$GHC_VERSION \
     && ./configure --prefix=/opt/ghc \
     && make -j5 install \
-    && cd .. && rm -rf ghc
+    && cd .. && rm -rf ghc-$GHC_VERSION
 ENV PATH="/opt/ghc/bin:${PATH}"
 
 # Update Cabal to 3.4.0.0
