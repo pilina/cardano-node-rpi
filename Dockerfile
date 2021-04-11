@@ -11,10 +11,10 @@ RUN apt-get update -y && apt-get full-upgrade -y \
 
 # Install GHC v9.0.1 (can't; have to use 8.10.4)
 # https://downloads.haskell.org/~ghc/9.0.1/ghc-9.0.1-i386-deb9-linux.tar.xz
-ENV GHC_VERSION=8.10.4
+ENV GHC_VERSION=8.10.1
 RUN case $(uname -m) in \
-      aarch64) url="https://downloads.haskell.org/~ghc/8.10.4/ghc-8.10.4-aarch64-deb10-linux.tar.xz" ;; \
-            *) url="https://downloads.haskell.org/~ghc/8.10.4/ghc-8.10.4-i386-deb9-linux.tar.xz" ;; \
+      aarch64) url="https://downloads.haskell.org/~ghc/8.10.1/ghc-8.10.1-aarch64-deb9-linux.tar.xz" ;; \
+            *) url="https://downloads.haskell.org/~ghc/8.10.1/ghc-8.10.1-x86_64-deb9-linux.tar.xz" ;; \
     esac \
     && curl $url -o ghc.tar.xz \
     && tar -xf ghc.tar.xz \
