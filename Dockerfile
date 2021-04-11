@@ -26,7 +26,7 @@ RUN case $(uname -m) in \
 ENV PATH="/opt/ghc/bin:${PATH}"
 
 # Update Cabal to 3.4.0.0
-RUN cabal update && cabal install cabal-install \
+RUN cabal update && cabal install cabal-install
 ENV PATH="/root/.cabal/bin:${PATH}"
 
 # Get a special version of libsodium
