@@ -9,6 +9,11 @@ RUN apt-get update -y && apt-get full-upgrade -y \
       libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make curl \
       g++ git wget libncursesw5 libtool autoconf libnuma-dev cabal-install
 
+# Update Cabal to 3.4.0.0
+RUN cabal --http-transport=curl update \
+    && cabal install cabal-install
+ENV PATH="/root/.cabal/bin:${PATH}"
+
 # Install GHC v9.0.1 (can't; have to use 8.10.4)
 # https://downloads.haskell.org/~ghc/9.0.1/ghc-9.0.1-i386-deb9-linux.tar.xz
 ENV GHC_VERSION=8.10.1
@@ -24,10 +29,6 @@ RUN case $(uname -m) in \
     && make -j5 install \
     && cd .. && rm -rf ghc-$GHC_VERSION
 ENV PATH="/opt/ghc/bin:${PATH}"
-
-# Update Cabal to 3.4.0.0
-RUN cabal update && cabal install cabal-install
-ENV PATH="/root/.cabal/bin:${PATH}"
 
 # Get a special version of libsodium
 RUN git clone https://github.com/input-output-hk/libsodium \
