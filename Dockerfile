@@ -19,11 +19,11 @@ RUN mkdir -p $HOME/.ghcup/bin && mkdir -p $HOME/.cabal/bin \
 
 # Install ghc 8.10.2
 ARG GHC_VERSION=8.10.2
-RUN ghcup -v install ghc $GHC_VERSION
+RUN ghcup install ghc $GHC_VERSION
 
 # Install cabal 3.4.0.0
 ARG CABAL_VERSION=3.4.0.0
-RUN ghcup -v install cabal $CABAL_VERSION
+RUN ghcup install cabal $CABAL_VERSION
 
 # Install libsodium
 RUN git clone https://github.com/input-output-hk/libsodium \
@@ -51,7 +51,7 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
     && mv $(readlink -f ~/.cabal/bin/cardano-cli) /opt/cardano/bin \
     && mv $(readlink -f ~/.cabal/bin/cardano-node) /opt/cardano/bin
 
-FROM debian:bullseye-slim
+FROM debian:bullseye-slim AS prod
 RUN apt-get update -y && apt-get full-upgrade -y \
     && apt-get install -y libnuma1 netbase
 
