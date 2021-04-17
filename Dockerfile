@@ -7,30 +7,25 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && apt-get full-upgrade -y \
     && apt-get install -y automake build-essential pkg-config libffi-dev \
       libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make curl \
-      g++ git wget libncursesw5 libtool autoconf libnuma-dev cabal-install
+      g++ git wget libncursesw5 libtool autoconf libnuma-dev
 
-# Update Cabal to 3.4.0.0
-RUN cabal --http-transport=curl update \
-    && cabal install cabal-install
-ENV PATH="/root/.cabal/bin:${PATH}"
+# Install ghcup
+ENV PATH="/root/.ghcup/bin:$PATH"
+RUN mkdir -p $HOME/.ghcup/bin && mkdir -p $HOME/.cabal/bin \
+    && cd $HOME/.ghcup/bin \
+    && curl "https://downloads.haskell.org/~ghcup/aarch64-linux-ghcup" -o ghcup \
+    && chmod +x ghcup \
+    && ghcup upgrade
 
-# Install GHC v9.0.1 (can't; have to use 8.10.4)
-# https://downloads.haskell.org/~ghc/9.0.1/ghc-9.0.1-i386-deb9-linux.tar.xz
-ENV GHC_VERSION=8.10.1
-RUN case $(uname -m) in \
-      aarch64) url="https://downloads.haskell.org/~ghc/8.10.1/ghc-8.10.1-aarch64-deb9-linux.tar.xz" ;; \
-            *) url="https://downloads.haskell.org/~ghc/8.10.1/ghc-8.10.1-x86_64-deb9-linux.tar.xz" ;; \
-    esac \
-    && curl $url -o ghc.tar.xz \
-    && tar -xf ghc.tar.xz \
-    && rm ghc.tar.xz \
-    && cd ghc-$GHC_VERSION \
-    && ./configure --prefix=/opt/ghc \
-    && make -j5 install \
-    && cd .. && rm -rf ghc-$GHC_VERSION
-ENV PATH="/opt/ghc/bin:${PATH}"
+# Install ghc 8.10.2
+ARG GHC_VERSION=8.10.2
+RUN ghcup install ghc $GHC_VERSION
 
-# Get a special version of libsodium
+# Install cabal 3.4.0.0
+ARG CABAL_VERSION=3.4.0.0
+RUN ghcup install cabal $CABAL_VERSION
+
+# Install libsodium
 RUN git clone https://github.com/input-output-hk/libsodium \
     && cd libsodium && git checkout 66f017f1 \
     && ./autogen.sh && ./configure --prefix=/opt/libsodium \
