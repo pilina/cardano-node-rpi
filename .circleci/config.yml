@@ -2,19 +2,20 @@ version: 2.1
 orbs:
   node: circleci/node@4.2.0
 jobs:
-  build_docker:
+  build:
     machine:
       image: ubuntu-2004:202101-01 
     resource_class: arm.medium
     steps:
       - checkout
       - run:
-          name: "Build Docker Image ARM V8"
+          name: "Build and Push Docker Image"
           command: |
-            docker build -t pilina/cardano-node:latest .
-            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker push -a pilina/cardano-node
+            VERSION=$(cat Dockerfile | grep "ARG VERSION=" | awk -F= '{ print $NF}')
+            docker build -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$VERSION .
+            echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push -a $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 workflows:
-  build:
+  docker:
     jobs:
-      - build_docker
+      - build
