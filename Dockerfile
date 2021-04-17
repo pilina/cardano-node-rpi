@@ -7,7 +7,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && apt-get full-upgrade -y \
     && apt-get install -y automake build-essential pkg-config libffi-dev \
       libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make curl \
-      g++ git wget libncursesw5 libtool autoconf libnuma-dev
+      g++ git wget libncursesw5 libtool autoconf libnuma-dev llvm-9
 
 # Install ghcup
 ENV PATH="/root/.ghcup/bin:$PATH"
