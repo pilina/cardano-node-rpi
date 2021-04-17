@@ -19,11 +19,11 @@ RUN mkdir -p $HOME/.ghcup/bin && mkdir -p $HOME/.cabal/bin \
 
 # Install ghc 8.10.2
 ARG GHC_VERSION=8.10.2
-RUN ghcup install ghc $GHC_VERSION
+RUN ghcup -v install ghc $GHC_VERSION
 
 # Install cabal 3.4.0.0
 ARG CABAL_VERSION=3.4.0.0
-RUN ghcup install cabal $CABAL_VERSION
+RUN ghcup -v install cabal $CABAL_VERSION
 
 # Install libsodium
 RUN git clone https://github.com/input-output-hk/libsodium \
