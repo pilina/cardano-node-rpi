@@ -4,7 +4,7 @@ orbs:
 jobs:
   build_docker:
     machine:
-      image: ubuntu-1604:202004-01
+      image: ubuntu-2004:202101-01 
     resource_class: arm.medium
     steps:
       - checkout
