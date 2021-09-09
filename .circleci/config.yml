@@ -1,0 +1,21 @@
+version: 2.1
+orbs:
+  node: circleci/node@4.2.0
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:202101-01 
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run:
+          name: "Build and Push Docker Image"
+          command: |
+            VERSION=$(cat Dockerfile | grep "ARG VERSION=" | awk -F= '{ print $NF}')
+            docker build -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$VERSION .
+            echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push -a $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+workflows:
+  docker:
+    jobs:
+      - build

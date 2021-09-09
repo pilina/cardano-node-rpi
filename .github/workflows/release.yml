@@ -1,0 +1,52 @@
+name: Build and Release
+
+on:
+  schedule:
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag"
+        required: no
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      cardano: ${{ steps.version.outputs.cardano }}
+      pilina: ${{ steps.version.outputs.pilina }}
+    steps:
+      - name: Fetch Release Version
+        id: version
+        run: |
+          echo "::set-output name=cardano::$( \
+            curl -sL https://api.github.com/repos/input-output-hk/cardano-node/releases/latest \
+            | jq -r '.tag_name')"
+          if [ -z "${{ github.event.inputs.tag }}" ]; then
+            echo "::set-output name=pilina::$( \
+              curl -sL https://api.github.com/repos/pilina/cardano-node-rpi/releases/latest \
+              | jq -r '.tag_name')"
+          else
+            echo "::set-output name=pilina::${{ github.event.inputs.tag }}"
+          fi
+      - name: List Versions
+        run: |
+          echo "Cardano: ${{ steps.version.outputs.cardano }}"
+          echo "Pilina: ${{ steps.version.outputs.pilina }}"
+  release:
+    needs: version
+    if: needs.version.outputs.cardano != needs.version.outputs.pilina
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.version.outputs.cardano }}
+          release_name: Release ${{ needs.version.outputs.cardano }}
+          body: |
+            Updating to new Cardano Node release `${{ needs.version.outputs.cardano }}`
+          draft: false
+          prerelease: false
