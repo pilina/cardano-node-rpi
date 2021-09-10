@@ -16,6 +16,8 @@ jobs:
       cardano: ${{ steps.version.outputs.cardano }}
       pilina: ${{ steps.version.outputs.pilina }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Fetch Release Version
         id: version
         run: |
@@ -33,48 +35,11 @@ jobs:
         run: |
           echo "Cardano: ${{ steps.version.outputs.cardano }}"
           echo "Pilina: ${{ steps.version.outputs.pilina }}"
-  release:
-    needs: version
-    if: needs.version.outputs.cardano != needs.version.outputs.pilina
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update Dockerfile
+        run: |
+          sed -i 's/ARG VERSION=${{ steps.version.outputs.pilina }}/ARG VERSION=${{ steps.version.outputs.cardano }}/g' ./Dockerfile
+      - name: Add and Commit
+        uses: EndBug/add-and-commit@v7
         with:
-          tag_name: ${{ needs.version.outputs.cardano }}
-          release_name: Release ${{ needs.version.outputs.cardano }}
-          body: |
-            Updating to new Cardano Node release `${{ needs.version.outputs.cardano }}`
-          draft: false
-          prerelease: false
-  build:
-    needs: version
-    if: needs.version.outputs.cardano != needs.version.outputs.pilina
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1.5.0
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and Push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            pilina/cardano-node-rpi:${{ needs.version.outputs.cardano }}
-            pilina/cardano-node-rpi:latest
-          build-args: VERSION=${{ needs.version.outputs.cardano }}
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+          default_author: github_actions
+          tag: "${{ steps.version.outputs.cardano }}"
