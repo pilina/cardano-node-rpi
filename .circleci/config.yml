@@ -16,6 +16,10 @@ jobs:
             echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push -a $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 workflows:
-  docker:
+  version: 2
+  tagged-build:
     jobs:
-      - build
+      - build:
+          filters:
+            tags:
+              only: /.*/
