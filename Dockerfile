@@ -35,7 +35,7 @@ ENV LD_LIBRARY_PATH="/opt/libsodium/lib:${LD_LIBRARY_PATH}" \
     PKG_CONFIG_PATH="/opt/libsodium/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 # Build cardano node
-ARG VERSION=1.26.1
+ARG VERSION=1.29.0
 RUN git clone https://github.com/input-output-hk/cardano-node.git \
     && cd cardano-node \
     && git fetch --all --recurse-submodules --tags \
